@@ -105,19 +105,19 @@ void initializeDefaultLightMaterials(out SLight light, out SMaterial materials[6
 
     /** MATERIALS **/
     vec4 lightCoefs = vec4(0.4,0.9,0.0,512.0);
-	materials[0].Color = vec3(1.0, 0.0, 0.0);
+	materials[0].Color = vec3(0.98, 0.729, 0.01);
 	materials[0].LightCoeffs = vec4(lightCoefs);
 	materials[0].ReflectionCoef = 0.5;
 	materials[0].RefractionCoef = 1.5;
 	materials[0].MaterialType = DIFFUSE_REFLECTION;
 
-	materials[1].Color = vec3(0.0, 1.0, 1.0);
+	materials[1].Color = vec3(0.98, 0.32, 0.01);
 	materials[1].LightCoeffs = vec4(lightCoefs);
 	materials[1].ReflectionCoef = 0.5;
 	materials[1].RefractionCoef = 1.5;
 	materials[1].MaterialType = DIFFUSE_REFLECTION;
 
-	materials[2].Color = vec3(0.0, 1.0, 0.0);
+	materials[2].Color = vec3(0.98, 0.01, 0.01);
 	materials[2].LightCoeffs = vec4(lightCoefs);
 	materials[2].ReflectionCoef = 0.5;
 	materials[2].RefractionCoef = 1.5;
@@ -144,68 +144,68 @@ void initializeDefaultLightMaterials(out SLight light, out SMaterial materials[6
 
 void initializeDefaultScene(out STriangle triangles[10], out SSphere spheres[2]) {
     /* left wall */
-    triangles[0].v1 = vec3(-5.0, 5.0, 5.0);
-	triangles[0].v2 = vec3(-5.0, 5.0,-10.0);
-	triangles[0].v3 = vec3(-5.0,-5.0,-10.0);
-	triangles[0].MaterialIdx = 0;
+    triangles[0].v1 = vec3(-5.0,-5.0,-5.0);
+    triangles[0].v2 = vec3(-5.0, 5.0, 5.0);
+    triangles[0].v3 = vec3(-5.0, 5.0,-5.0);
+    triangles[0].MaterialIdx = 0;
     
-    triangles[1].v1 = vec3(-5.0,-5.0,-10.0);
-	triangles[1].v2 = vec3(-5.0,-5.0, 5.0);
-	triangles[1].v3 = vec3(-5.0, 5.0, 5.0);
-	triangles[1].MaterialIdx = 0;
+    triangles[1].v1 = vec3(-5.0,-5.0,-5.0);
+    triangles[1].v2 = vec3(-5.0,-5.0, 5.0);
+    triangles[1].v3 = vec3(-5.0, 5.0, 5.0);
+    triangles[1].MaterialIdx = 0;
     
     /* back wall */
     triangles[2].v1 = vec3(-5.0,-5.0, 5.0);
-	triangles[2].v2 = vec3( 5.0,-5.0, 5.0);
-	triangles[2].v3 = vec3(5.0, 5.0, 5.0);
-	triangles[2].MaterialIdx = 1;
-
-	triangles[3].v1 = vec3( 5.0, 5.0, 5.0);
-	triangles[3].v2 = vec3(-5.0, 5.0, 5.0);
-	triangles[3].v3 = vec3(-5.0,-5.0, 5.0);
-	triangles[3].MaterialIdx = 1;
+    triangles[2].v2 = vec3( 5.0,-5.0, 5.0);
+    triangles[2].v3 = vec3(-5.0, 5.0, 5.0);
+    triangles[2].MaterialIdx = 1;
+    
+    triangles[3].v1 = vec3( 5.0, 5.0, 5.0);
+    triangles[3].v2 = vec3(-5.0, 5.0, 5.0);
+    triangles[3].v3 = vec3( 5.0,-5.0, 5.0);
+    triangles[3].MaterialIdx = 1;
     
     /* right wall */
-    triangles[4].v1 = vec3(5.0,-5.0,-10.0);
-	triangles[4].v2 = vec3( 5.0,5.0,-10.0);
-	triangles[4].v3 = vec3(5.0,5.0,5.0);
-	triangles[4].MaterialIdx = 2;
-
-	triangles[5].v1 = vec3( 5.0,5.0,5.0);
-	triangles[5].v2 = vec3(5.0,-5.0,5.0);
-	triangles[5].v3 = vec3(5.0,-5.0,-10.0);
-	triangles[5].MaterialIdx = 2;
+    triangles[4].v1 = vec3(5.0, 5.0, 5.0);
+    triangles[4].v2 = vec3(5.0, -5.0, -5.0);
+    triangles[4].v3 = vec3(5.0, 5.0, -5.0);
+    triangles[4].MaterialIdx = 2;
+    
+    triangles[5].v1 = vec3(5.0, -5.0, -5.0);
+    triangles[5].v2 = vec3(5.0, 5.0, 5.0);
+    triangles[5].v3 = vec3(5.0, -5.0, 5.0);
+    triangles[5].MaterialIdx = 2;
 
     /* top wall */
-    triangles[6].v1 = vec3(5.0,5.0,5.0);
-	triangles[6].v2 = vec3( 5.0,5.0,-10.0);
-	triangles[6].v3 = vec3(-5.0,5.0,-10.0);
-	triangles[6].MaterialIdx = 3;
+    triangles[6].v1 = vec3(-5.0, 5.0, -5.0);
+    triangles[6].v2 = vec3(-5.0, 5.0, 5.0);
+    triangles[6].v3 = vec3(5.0, 5.0, 5.0);
+    triangles[6].MaterialIdx = 3;
 
-	triangles[7].v1 = vec3( -5.0,5.0,-10.0);
-	triangles[7].v2 = vec3(-5.0,5.0,5.0);
-	triangles[7].v3 = vec3(5.0,5.0,5.0);
-	triangles[7].MaterialIdx = 3;
+    triangles[7].v1 = vec3(-5.0, 5.0, -5.0);
+    triangles[7].v2 = vec3(5.0, 5.0, 5.0);
+    triangles[7].v3 = vec3(5.0, 5.0, -5.0);
+    triangles[7].MaterialIdx = 3;
 
     /* bottom wall */
-    triangles[8].v1 = vec3(-5.0,-5.0,-10.0);
-	triangles[8].v2 = vec3( 5.0,-5.0,-10.0);
-	triangles[8].v3 = vec3(5.0,-5.0,5.0);
-	triangles[8].MaterialIdx = 3;
+    triangles[8].v1 = vec3(-5.0, -5.0, 5.0);
+    triangles[8].v2 = vec3(-5.0, -5.0, -5.0);
+    triangles[8].v3 = vec3(5.0, -5.0, 5.0);
+    triangles[8].MaterialIdx = 3;
 
-	triangles[9].v1 = vec3( 5.0,-5.0,5.0);
-	triangles[9].v2 = vec3(-5.0,-5.0,5.0);
-	triangles[9].v3 = vec3(-5.0,-5.0,-10.0);
-	triangles[9].MaterialIdx = 3;
+    triangles[9].v1 = vec3(5.0, -5.0, 5.0);
+    triangles[9].v2 = vec3(-5.0, -5.0, -5.0);
+    triangles[9].v3 = vec3(5.0, -5.0, -5.0);
+    triangles[9].MaterialIdx = 3;
     
     /** SPHERES **/
-    spheres[0].Center = vec3(-2.0,-1.0,-2.0);
-	spheres[0].Radius = 2.0;
-	spheres[0].MaterialIdx = 5;
-
-	spheres[1].Center = vec3(1.0,1.0,2.0);
-	spheres[1].Radius = 1.0;
-	spheres[1].MaterialIdx = 4;
+    spheres[0].Center = vec3(-2.0,-3.0,-1.0);
+    spheres[0].Radius = 2.0;
+    spheres[0].MaterialIdx = 5;
+    
+    spheres[1].Center = vec3(2.0,0.0,2.0);
+    spheres[1].Radius = 1.0;
+    spheres[1].MaterialIdx = 4;
 
 }
 
@@ -343,7 +343,7 @@ bool Raytrace ( SRay ray, SSphere spheres[2], STriangle triangles[10], SMaterial
     }
 
     //calculate intersect with triangles
-    for(int i = 0; i < 12; i++)
+    for(int i = 0; i < 10; i++)
     {
          STriangle triangle = triangles[i];
          if(IntersectTriangle(ray, triangle.v1, triangle.v2, triangle.v3, test) && test < intersect.Time)
@@ -477,8 +477,8 @@ void main ( void )
                 }
                 case REFRACTION:
                 {
-                    vec3 refractDirection = normalize(refract(normalize(ray.Direction), normalize(intersect.Normal), 1 / intersect.RefractionCoef));
-                    //vec3 refractDirection = (refract(normalize(ray.Direction), normalize(intersect.Normal), 1 / intersect.RefractionCoef));
+                    //vec3 refractDirection = normalize(refract(normalize(ray.Direction), normalize(intersect.Normal), 1 / intersect.RefractionCoef));
+                    vec3 refractDirection = (refract(normalize(ray.Direction), normalize(intersect.Normal), 1 / intersect.RefractionCoef));
                     float contribution = trRay.contribution;
                     vec3 opposit = intersect.Point - 2 * ((intersect.Point * refractDirection) /(refractDirection * refractDirection)) * refractDirection;
                     STracingRay refractRay = STracingRay(
