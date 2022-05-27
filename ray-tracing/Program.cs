@@ -10,7 +10,7 @@ namespace ray_tracing
         {
             var nativeWindowSettings = new NativeWindowSettings()
             {
-                Size = new Vector2i(800, 800),
+                Size = new Vector2i(600, 600),
                 Title = "Ray tracing",
             };
 

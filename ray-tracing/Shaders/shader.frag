@@ -2,7 +2,8 @@
 
 #define EPSILON 0.001
 #define BIG 1000000.0
-#define STACK_MAX_SIZE 1024
+#define STACK_MAX_SIZE 2048
+#define AIR_REFRACTION_COEF 1
 
 const int DIFFUSE_REFLECTION = 1;
 const int MIRROR_REFLECTION = 2;
@@ -101,7 +102,7 @@ SRay GenerateRay ( SCamera uCamera )
 void initializeDefaultLightMaterials(out SLight light, out SMaterial materials[6])
 {
     //** LIGHT **//
-    light.Position = vec3(0.0, 2.0, -4.0f);
+    light.Position = vec3(2.0, 2.0, -3.0f);
 
     /** MATERIALS **/
     vec4 lightCoefs = vec4(0.4,0.9,0.0,512.0);
@@ -126,7 +127,7 @@ void initializeDefaultLightMaterials(out SLight light, out SMaterial materials[6
 	materials[3].Color = vec3(1.0, 1.0, 1.0);
 	materials[3].LightCoeffs = vec4(lightCoefs);
 	materials[3].ReflectionCoef = 0.5;
-	materials[3].RefractionCoef =1.5;
+	materials[3].RefractionCoef = 1.5;
 	materials[3].MaterialType = DIFFUSE_REFLECTION;
 
 	materials[4].Color = vec3(0.3, 0.3, 0.3);
@@ -371,7 +372,7 @@ vec3 Phong ( SIntersection intersect, SLight currLight, float shadow, SCamera uC
      float specular = pow(max(dot(reflected, light), 0.0), intersect.LightCoeffs.w);
      
      return intersect.LightCoeffs.x * intersect.Color +
-        intersect.LightCoeffs.y * diffuse * intersect.Color +
+        intersect.LightCoeffs.y * diffuse * intersect.Color * shadow +
         intersect.LightCoeffs.z * specular * vec3(0,0,1);
 }
 
@@ -435,19 +436,16 @@ void main ( void )
     while(!isEmpty()) {
         STracingRay trRay = popRay();
         ray = trRay.ray;
-        
-        
-        if (trRay.depth > 5) {
-            resultColor = vec3(1.0, 0.0, 0.0);
-            break;
-        }
-
         SIntersection intersect;
         intersect.Time = BIG;
         start = 0;
         final = BIG;
-
-        if (Raytrace(ray, spheres,triangles,materials, start, final, intersect)) {
+        
+        if (trRay.depth > 5) {
+            resultColor = vec3(0.0, 0.0, 0.0);
+            break;
+        }
+        if (Raytrace(ray, spheres, triangles, materials, start, final, intersect)) {
             switch(intersect.MaterialType) 
             {
                 case DIFFUSE_REFLECTION:
@@ -477,15 +475,19 @@ void main ( void )
                 }
                 case REFRACTION:
                 {
-                    //vec3 refractDirection = normalize(refract(normalize(ray.Direction), normalize(intersect.Normal), 1 / intersect.RefractionCoef));
-                    vec3 refractDirection = (refract(normalize(ray.Direction), normalize(intersect.Normal), 1 / intersect.RefractionCoef));
-                    float contribution = trRay.contribution;
-                    vec3 opposit = intersect.Point - 2 * ((intersect.Point * refractDirection) /(refractDirection * refractDirection)) * refractDirection;
-                    STracingRay refractRay = STracingRay(
-                        SRay(opposit + refractDirection * EPSILON, refractDirection),
+                    bool fromOutside = dot(intersect.Normal, ray.Direction) < 0.0;
+					float contribution = trRay.contribution;
+					float shadowing = Shadow(uLight, intersect);
+					resultColor += contribution * Phong (intersect, light, shadowing, uCamera);
+
+					vec3 refractDirection, reflectDirection;
+                    refractDirection = fromOutside ? refract(ray.Direction, intersect.Normal, AIR_REFRACTION_COEF / intersect.RefractionCoef) : -refract(ray.Direction, intersect.Normal, intersect.RefractionCoef);
+                    reflectDirection = reflect(ray.Direction, intersect.Normal);
+
+					STracingRay refractRay = STracingRay(
+                        SRay(intersect.Point + refractDirection * EPSILON, refractDirection), 
                         contribution, trRay.depth + 1
-                    );
-                    
+                    );                    
                     pushRay(refractRay);
                     break;
                 }
