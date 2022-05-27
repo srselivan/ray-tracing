@@ -8,6 +8,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Mathematics;
+using System.IO;
 
 namespace ray_tracing
 {
@@ -44,7 +45,7 @@ namespace ray_tracing
 
             GL.GenBuffers(1, out _vertexBufferObject);
             GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
-            GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(_vertices.Length * Vector3.SizeInBytes), _vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(_vertices.Length * Vector3.SizeInBytes), _vertices, BufferUsageHint.StaticDraw);
 
             _vertexArrayObject = GL.GenVertexArray();
             GL.BindVertexArray(_vertexArrayObject);

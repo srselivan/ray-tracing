@@ -29,8 +29,10 @@ struct SMaterial
 {
      //diffuse color
      vec3 Color;
+
      // ambient, diffuse and specular coeffs
      vec4 LightCoeffs;
+
      // 0 - non-reflection, 1 - mirror
      float ReflectionCoef;
      float RefractionCoef;
@@ -105,6 +107,7 @@ void initializeDefaultLightMaterials(out SLight light, out SMaterial materials[6
 {
      //** LIGHT **//
      light.Position = vec3(0.0, 2.0, -4.0f);
+
      /** MATERIALS **/
      vec4 lightCoefs = vec4(0.4,0.9,0.0,512.0);
      materials[0].Color = vec3(0.0, 1.0, 0.0);
@@ -204,13 +207,16 @@ bool IntersectSphere ( SSphere sphere, SRay ray, float start, float final, out f
     float B = dot ( ray.Direction, ray.Origin );
     float C = dot ( ray.Origin, ray.Origin ) - sphere.Radius * sphere.Radius;
     float D = B * B - A * C;
+
     if ( D > 0.0 ) {
         D = sqrt ( D );
+
         //time = min ( max ( 0.0, ( -B - D ) / A ), ( -B + D ) / A );
         float t1 = ( -B - D ) / A;
         float t2 = ( -B + D ) / A;
+
         if(t1 < 0 && t2 < 0)
-        return false;
+            return false;
 
         if(min(t1, t2) < 0) {
             time = max(t1,t2);
@@ -223,36 +229,45 @@ bool IntersectSphere ( SSphere sphere, SRay ray, float start, float final, out f
 }
 
 bool IntersectTriangle (SRay ray, vec3 v1, vec3 v2, vec3 v3, out float time ) {
-    // // Compute the intersection of ray with a triangle using geometric solution
+    // Compute the intersection of ray with a triangle using geometric solution
     // Input: // points v0, v1, v2 are the triangle's vertices
     // rayOrig and rayDir are the ray's origin (point) and the ray's direction
     // Return: // return true is the ray intersects the triangle, false otherwise
     // bool intersectTriangle(point v0, point v1, point v2, point rayOrig, vector rayDir) {
     // compute plane's normal vector
+
     time = -1;
     vec3 A = v2 - v1;
     vec3 B = v3 - v1;
+
     // no need to normalize vector
     vec3 N = cross(A, B);
+
     // N
     // // Step 1: finding P
     // // check if ray and plane are parallel ?
     float NdotRayDirection = dot(N, ray.Direction);
     if (abs(NdotRayDirection) < 0.001)
         return false;
+
     // they are parallel so they don't intersect !
     // compute d parameter using equation 2
     float d = dot(N, v1);
+
     // compute t (equation 3)
     float t = -(dot(N, ray.Origin) - d) / NdotRayDirection;
+
     // check if the triangle is in behind the ray
     if (t < 0)
         return false;
+
     // the triangle is behind
     // compute the intersection point using equation 1
     vec3 P = ray.Origin + t * ray.Direction;
+
     // // Step 2: inside-outside test //
     vec3 C;
+
     // vector perpendicular to triangle's plane
     // edge 0
     vec3 edge1 = v2 - v1;
@@ -260,6 +275,7 @@ bool IntersectTriangle (SRay ray, vec3 v1, vec3 v2, vec3 v3, out float time ) {
     C = cross(edge1, VP1);
     if (dot(N, C) < 0)
         return false;
+
     // P is on the right side
     // edge 1
     vec3 edge2 = v3 - v2;
@@ -267,6 +283,7 @@ bool IntersectTriangle (SRay ray, vec3 v1, vec3 v2, vec3 v3, out float time ) {
     C = cross(edge2, VP2);
     if (dot(N, C) < 0)
         return false;
+
     // P is on the right side
     // edge 2
     vec3 edge3 = v1 - v3;
@@ -274,9 +291,10 @@ bool IntersectTriangle (SRay ray, vec3 v1, vec3 v2, vec3 v3, out float time ) {
     C = cross(edge3, VP3);
     if (dot(N, C) < 0)
         return false;
+
     // P is on the right side;
     time = t;
-        return true;
+    return true;
     // this ray hits the triangle
 }
 
@@ -285,6 +303,7 @@ bool Raytrace ( SRay ray, SSphere spheres[2], STriangle triangles[10], SMaterial
     bool result = false;
     float test = start;
     intersect.Time = final;
+
     //calculate intersect with spheres
     for(int i = 0; i < 2; i++)
     {
@@ -302,6 +321,7 @@ bool Raytrace ( SRay ray, SSphere spheres[2], STriangle triangles[10], SMaterial
              result = true;
          }
     }
+
     //calculate intersect with triangles
     for(int i = 0; i < 10; i++)
     {
@@ -340,21 +360,25 @@ float Shadow(SLight currLight, SIntersection intersect)
 {
      // Point is lighted
      float shadowing = 1.0;
+
      // Vector to the light source
      vec3 direction = normalize(currLight.Position - intersect.Point);
+
      // Distance to the light source
      float distanceLight = distance(currLight.Position, intersect.Point);
+
      // Generation shadow ray for this light source
      SRay shadowRay = SRay(intersect.Point + direction * EPSILON, direction);
+
      // ...test intersection this ray with each scene object
      SIntersection shadowIntersect;
      shadowIntersect.Time = BIG;
+
      // trace ray from shadow ray begining to light source position
-     if(Raytrace(shadowRay, spheres, triangles, materials, 0, distanceLight,
-     shadowIntersect))
+     if(Raytrace(shadowRay, spheres, triangles, materials, 0, distanceLight, shadowIntersect))
      {
-     // this light source is invisible in the intercection point
-     shadowing = 0.0;
+         // this light source is invisible in the intercection point
+         shadowing = 0.0;
      }
      return shadowing;
 }
@@ -368,14 +392,11 @@ bool isEmpty() {
 }
 
 void pushRay(STracingRay trRay) {
-    stack.topIndex = stack.topIndex + 1;
-    stack.array[stack.topIndex] = trRay;
+    stack.array[++stack.topIndex] = trRay;
 }
 
 STracingRay popRay() {
-    STracingRay buf = stack.array[stack.topIndex];
-    stack.topIndex = stack.topIndex - 1;
-    
+    STracingRay buf = stack.array[stack.topIndex--];
     return buf;
 }
 
@@ -426,6 +447,7 @@ void main ( void )
                         resultColor += contribution * Phong(intersect, uLight, shadowing, uCamera );
                     }
                     vec3 reflectDirection = reflect(ray.Direction, intersect.Normal);
+
                     // creare reflection ray
                     float contribution = trRay.contribution * intersect.ReflectionCoef;
                     STracingRay reflectRay = STracingRay(
